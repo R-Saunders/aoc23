@@ -1001,14 +1001,49 @@ let data = [
 	"jmgnfive7ffglffpjlvbtvl935zz",
 ];
 
-let test = ["1abc2", "pqr3stu8vwx", "a1b2c3d4e5f", "treb7uchet"];
+let test = [
+	"two1nine",
+	"eightwothree",
+	"abcone2threexyz",
+	"xtwone3four",
+	"4nineeightseven2",
+	"zoneight234",
+	"7pqrstsixteen",
+];
+
+function replace(inputString) {
+	const spelledOutNumbers = {
+		one: "1",
+		two: "2",
+		three: "3",
+		four: "4",
+		five: "5",
+		six: "6",
+		seven: "7",
+		eight: "8",
+		nine: "9",
+		zero: "0",
+	};
+
+	// Replace spelled-out numbers with numerical values
+	for (const [word, digit] of Object.entries(spelledOutNumbers)) {
+		const regex = new RegExp(word, "ig");
+		inputString = inputString.replace(regex, digit);
+	}
+
+	return inputString;
+}
 
 function testFunction(input) {
 	let c = []; // complete array
 
 	// Loop over each item in input array
 	for (let i = 0; i < input.length; i++) {
-		let a = input[i].split(""); // Split string into array of all chars
+		console.log(input[i]);
+		let e = replace(input[i]);
+		console.log(e);
+		let a = e.split(""); // Split string into array of all chars
+		console.log(a);
 		let b = []; // stores array without letters
 		let d = []; // handler array to contain and join first and last number of array b
 		// Fills array b with numbers from array a
@@ -1017,13 +1052,18 @@ function testFunction(input) {
 				b.push(a[j]);
 			}
 		}
+		console.log(b);
 		// Takes first and last number from array b and puts them into array c
 		d.push(b[0]);
 		d.push(b.pop());
 		c.push(parseInt(d.join("")));
+		console.log(c);
+		console.log("####################");
 	}
 	// Return sum of C
 	return c.reduce((a, b) => {
 		return a + b;
 	}, 0);
 }
+
+console.log(testFunction(test));

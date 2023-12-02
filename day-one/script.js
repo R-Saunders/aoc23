@@ -1025,11 +1025,14 @@ function replace(inputString) {
 		zero: "0",
 	};
 
+	// Create a regular expression pattern for matching any spelled-out number
+	const pattern = new RegExp(Object.keys(spelledOutNumbers).join("|"), "ig");
+
 	// Replace spelled-out numbers with numerical values
-	for (const [word, digit] of Object.entries(spelledOutNumbers)) {
-		const regex = new RegExp(word, "ig");
-		inputString = inputString.replace(regex, digit);
-	}
+	inputString = inputString.replace(
+		pattern,
+		(match) => spelledOutNumbers[match.toLowerCase()]
+	);
 
 	return inputString;
 }

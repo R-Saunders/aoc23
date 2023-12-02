@@ -1001,20 +1001,29 @@ let data = [
 	"jmgnfive7ffglffpjlvbtvl935zz",
 ];
 
-let test = ["a1b2c3d4e5f"];
+let test = ["1abc2", "pqr3stu8vwx", "a1b2c3d4e5f", "treb7uchet"];
 
 function testFunction(input) {
-	a = input[0].split("");
-	console.log(a);
-	b = [];
-	for (i = 0; i < a.length; i++) {
-		console.log();
-		if (!isNaN(parseInt(a[i]))) {
-			b.push(a[i]);
-		}
-	}
-	console.log(b);
-	return "answer";
-}
+	let c = []; // complete array
 
-console.log(testFunction(test));
+	// Loop over each item in input array
+	for (let i = 0; i < input.length; i++) {
+		let a = input[i].split(""); // Split string into array of all chars
+		let b = []; // stores array without letters
+		let d = []; // handler array to contain and join first and last number of array b
+		// Fills array b with numbers from array a
+		for (j = 0; j < a.length; j++) {
+			if (!isNaN(parseInt(a[j]))) {
+				b.push(a[j]);
+			}
+		}
+		// Takes first and last number from array b and puts them into array c
+		d.push(b[0]);
+		d.push(b.pop());
+		c.push(parseInt(d.join("")));
+	}
+	// Return sum of C
+	return c.reduce((a, b) => {
+		return a + b;
+	}, 0);
+}

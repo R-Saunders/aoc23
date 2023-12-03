@@ -102,11 +102,11 @@ const data = [
 ];
 
 const rawTestData = [
-	"Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green",
-	"Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue",
-	"Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red",
-	"Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red",
-	"Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green",
+	"Game 1: 4 blue, 16 green, 2 red; 5 red, 11 blue, 16 green; 9 green, 11 blue; 10 blue, 6 green, 4 red",
+	"Game 2: 15 green, 20 red, 8 blue; 12 green, 7 red; 10 green, 2 blue, 15 red; 13 blue, 15 red",
+	"Game 3: 8 red, 2 blue; 3 green, 10 blue, 10 red; 7 green, 4 blue, 7 red; 8 red, 6 green, 13 blue; 4 green, 3 blue, 10 red; 7 blue, 7 green, 5 red",
+	"Game 4: 13 green, 14 blue, 9 red; 6 green, 14 red, 18 blue; 9 red, 11 green, 3 blue; 11 green, 10 red, 14 blue; 17 blue, 3 red, 4 green; 17 blue, 1 red, 9 green",
+	"Game 5: 2 green, 1 red; 8 blue, 2 green, 6 red; 5 blue, 9 red, 2 green; 3 green, 8 red, 6 blue; 6 blue, 5 red",
 ];
 
 const parsedData = [];
@@ -114,7 +114,6 @@ const parsedData = [];
 function parseGameData(inputString) {
 	// Split the string into an array of rounds
 	const firstSplit = inputString.split(";");
-
 	// Split game number out of first round
 	const secondSplit = firstSplit.shift().split(":");
 
@@ -169,46 +168,52 @@ function parseAllGamesData(inputArray) {
 	return parsedData;
 }
 
-const parsedGameData = parseAllGamesData(rawTestData);
+const parsedGameData = parseAllGamesData(data);
 
 function evaluateData(inputData) {
 	const result = [];
 
-	// Loop through each game
-	inputData.forEach(([game, rounds]) => {
-		// Create counters for cube colours
-		let redCount = 0;
-		let greenCount = 0;
-		let blueCount = 0;
+	function isPossibleCombo(round) {
+		let red = 0;
+		let green = 0;
+		let blue = 0;
 
-		// Loop through each round in the game to test if they are possible
-		const possible = rounds.every((round) => {
-			// Increment counters based on the current rounds cubes
-			Object.entries(round).forEach(([color, quantity]) => {
-				if (color === "red") redCount += quantity;
-				else if (color === "green") greenCount += quantity;
-				else if (color === "blue") blueCount += quantity;
-			});
+		// Loop through set of cube colours in the round
+		for (const color in round) {
+			const quantity = round[color];
 
-			// Check if its a possible combo
-			return redCount <= 12 && greenCount <= 13 && blueCount <= 14;
-		});
-
-		// If it is possible then add the game to the result
-		if (possible) {
-			result.push(game);
+			// Update counters
+			if (color === "red") red += quantity;
+			else if (color === "green") green += quantity;
+			else if (color === "blue") blue += quantity;
 		}
-	});
+
+		// Check if it is a possible combo
+		return red <= 12 && green <= 13 && blue <= 14;
+	}
+
+	// Loop over each game
+	for (i = 0; i < inputData.length; i++) {
+		const gameNumber = inputData[i][0].Game;
+		const rounds = inputData[i][1];
+		let isPossible = false;
+		// Loop over each round of each game
+		for (j = 0; j < rounds.length; j++) {
+			isPossibleCombo(rounds[j]) ? (isPossible = true) : (isPossible = false);
+			if (isPossible == false) {
+				break;
+			}
+		}
+		if (isPossibleCombo(rounds[j])) {
+			result.push(gameNumber);
+		}
+	}
 
 	return result;
 }
 
 const evaluatedData = evaluateData(parsedGameData);
 
-function sumGameNumbers(gamesArray) {
-	// Use a reducer function to sum up the "Game" values
-	const total = gamesArray.reduce((acc, game) => acc + game.Game, 0);
-	return total;
-}
+const total = evaluatedData.reduce((acc, num) => acc + num, 0);
 
-console.log(sumGameNumbers(evaluatedData));
+console.log(total);
